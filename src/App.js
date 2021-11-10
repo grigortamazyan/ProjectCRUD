@@ -10,7 +10,7 @@ import {
   Route, Link
 } from "react-router-dom";
 import Analytics from './Analytics';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, PageHeader, Select } from 'antd';
 
 function App() {
   const [isEditing, setIsEditing] = useState(false)
@@ -22,35 +22,38 @@ function App() {
       id: 1,
       name: 'John',
       email: 'john@gmail.com',
-      address: '123 Street, NYC'
+      address: '123 Street, NYC',
+      salary: 5000,
+      currency: 'USD'
     },
     {
       id: 2,
       name: 'Dave',
       email: 'dave@gmail.com',
-      address: '123 Street, LA'
+      address: '123 Street, LA',
+      salary: 4000,
+      currency: 'EUR'
     },
     {
       id: 3,
       name: 'Tom',
       email: 'tom@gmail.com',
-      address: '123 Street, Boston'
+      address: '123 Street, Boston',
+      salary: 3000,
+      currency: 'CAD'
     },
     {
       id: 4,
       name: 'Ann',
       email: 'ann@gmail.com',
-      address: '123 Street, Toronto'
+      address: '123 Street, Toronto',
+      salary: 6000,
+      currency: 'AUD'
     }
   ])
   const { Header, Content, Footer } = Layout;
-
+  const { Option } = Select;
   const columns = [
-    {
-      key: '1',
-      title: 'ID',
-      dataIndex: 'id'
-    },
     {
       key: '2',
       title: 'Name',
@@ -68,6 +71,16 @@ function App() {
     },
     {
       key: '5',
+      title: 'Salary',
+      dataIndex: 'salary'
+    },
+    {
+      key: '6',
+      title: 'Currency',
+      dataIndex: 'currency'
+    },
+    {
+      key: '7',
       title: 'Actions',
       render: (record) => {
         return <>
@@ -134,11 +147,16 @@ function App() {
           </Menu>
         </Header>
         <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
+
           <div className="App">
             <Switch>
               <Route path='/' exact>
                 <header className="App-header">
-                  <Button onClick={onCreateEmployee}>Creat a new Employee</Button>
+                  <PageHeader
+                    className="site-page-header"
+                    title="Database of Employees"
+                  />
+                  <Button onClick={onCreateEmployee} style={{ marginBottom: 5 }}>Creat a new Employee</Button>
                   <Table
                     columns={columns}
                     dataSource={dataSource}
@@ -150,16 +168,22 @@ function App() {
                     onCancel={resetCreating}
                     onOk={onAddEmployee}
                   >
-                    <Input value={creatingEmployee?.name} onChange={e => setCreatingEmployee({ ...creatingEmployee, name: e.target.value })} />
-                    <Input value={creatingEmployee?.email} onChange={e => setCreatingEmployee({ ...creatingEmployee, email: e.target.value })} />
-
-                    <Input value={creatingEmployee?.address} onChange={e => setCreatingEmployee({ ...creatingEmployee, address: e.target.value })} />
+                    <Input placeholder={'Employee Name'} value={creatingEmployee?.name} onChange={e => setCreatingEmployee({ ...creatingEmployee, name: e.target.value })} />
+                    <Input placeholder={'Email'} value={creatingEmployee?.email} onChange={e => setCreatingEmployee({ ...creatingEmployee, email: e.target.value })} />
+                    <Input placeholder={'Address'} value={creatingEmployee?.address} onChange={e => setCreatingEmployee({ ...creatingEmployee, address: e.target.value })} />
+                    <Input placeholder={'Salary'} value={creatingEmployee?.salary} onChange={e => setCreatingEmployee({ ...creatingEmployee, salary: e.target.value })} />
+                    <Select style={{ display: 'block' }} placeholder='Select currency' value={creatingEmployee?.currency} onChange={value => setCreatingEmployee({ ...creatingEmployee, currency: value })} >
+                      <Option value="USD">USD</Option>
+                      <Option value="AMD">AMD</Option>
+                      <Option value="CAD">CAD</Option>
+                      <Option value="RUR">RUR</Option>
+                    </Select>
                   </Modal>
                   <Modal
                     title='Edit Employee'
                     visible={isEditing}
                     okText='Save'
-                    footer={null}
+                    onOk={handleSubmit}
                     onCancel={resetEditing}
                   >
                     <Input value={editingEmployee?.name} onChange={(e) => {
@@ -177,10 +201,16 @@ function App() {
                         return { ...pre, address: e.target.value }
                       })
                     }} />
-                    <div>
-                      <Button onClick={resetEditing}>Cancel</Button>
-                      <Button onClick={handleSubmit} type={'primary'} style={{ marginLeft: '1rem' }}>Save</Button>
-                    </div>
+                    <Input value={editingEmployee?.salary} onChange={(e) => {
+                      setEditingEmployee(pre => {
+                        return { ...pre, salary: e.target.value }
+                      })
+                    }} />
+                    <Input value={editingEmployee?.currency} onChange={(e) => {
+                      setEditingEmployee(pre => {
+                        return { ...pre, currency: e.target.value }
+                      })
+                    }} />
 
                   </Modal>
                 </header>
