@@ -51,7 +51,44 @@ function App() {
       currency: 'AMD'
     }
   ])
-  const [sumOrders, setSumOrders] = useState(0);
+  const [dealsSource, setDealsSource] = useState([
+    {
+      id: 1,
+      name: 'Epam Systems',
+      email: 'order@epam.com',
+      address: '123 Street, NYC',
+      price: 5000,
+      currency: 'USD',
+      quantity: 12
+    },
+    {
+      id: 2,
+      name: 'Google LLC',
+      email: 'order@google.com',
+      address: '123 Street, San Francisco',
+      price: 4000,
+      currency: 'EUR',
+      quantity: 8
+    },
+    {
+      id: 3,
+      name: 'Facebook LLC',
+      email: 'order@fb.com',
+      address: '852 Street, Boston',
+      price: 3000,
+      currency: 'CAD',
+      quantity: 2
+    },
+    {
+      id: 4,
+      name: 'Picsart LLC',
+      email: 'order@picsart.com',
+      address: '123 Street, Yerevan',
+      price: 600000,
+      currency: 'AMD',
+      quantity: 6
+    }
+  ])
   const { Header, Content, Footer } = Layout;
   const { Option } = Select;
   const columns = [
@@ -96,15 +133,10 @@ function App() {
     }
   ]
 
-  const handleTotal = (total) => {
-    setSumOrders(total)
-  }
-
 
   const onAddEmployee = () => {
     const id = generateId()
     setDataSource(prev => [{ ...creatingEmployee, id }].concat(prev))
-    console.log(dataSource)
     resetCreating()
   }
   const onDeleteEmployee = (record) => {
@@ -209,7 +241,7 @@ function App() {
                     }} />
                     <Input value={editingEmployee?.salary} onChange={(e) => {
                       setEditingEmployee(pre => {
-                        return { ...pre, salary: e.target.value }
+                        return { ...pre, salary: parseInt(e.target.value) }
                       })
                     }} />
                     <Input value={editingEmployee?.currency} onChange={(e) => {
@@ -222,10 +254,10 @@ function App() {
                 </header>
               </Route>
               <Route path='/analytics'>
-                <Analytics revenue={sumOrders} salaryData={dataSource} />
+                <Analytics salaryData={dataSource} orderData={dealsSource} />
               </Route>
               <Route path='/deals'>
-                <Deals parentCallback={handleTotal} />
+                <Deals dataSource={dealsSource} setDataSource={setDealsSource} />
               </Route>
             </Switch>
           </div>
