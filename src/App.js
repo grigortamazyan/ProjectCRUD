@@ -11,7 +11,7 @@ import {
 } from "react-router-dom";
 import Analytics from './Analytics';
 import { Layout, Menu, PageHeader, Select } from 'antd';
-
+import Deals from './Deals';
 function App() {
   const [isEditing, setIsEditing] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
@@ -47,10 +47,11 @@ function App() {
       name: 'Ann',
       email: 'ann@gmail.com',
       address: '123 Street, Toronto',
-      salary: 6000,
-      currency: 'AUD'
+      salary: 600000,
+      currency: 'AMD'
     }
   ])
+  const [sumOrders, setSumOrders] = useState(0);
   const { Header, Content, Footer } = Layout;
   const { Option } = Select;
   const columns = [
@@ -95,11 +96,16 @@ function App() {
     }
   ]
 
+  const handleTotal = (total) => {
+    setSumOrders(total)
+  }
+
+
   const onAddEmployee = () => {
     const id = generateId()
     setDataSource(prev => [{ ...creatingEmployee, id }].concat(prev))
+    console.log(dataSource)
     resetCreating()
-
   }
   const onDeleteEmployee = (record) => {
     Modal.confirm({
@@ -140,10 +146,10 @@ function App() {
       <Router>
         <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
           <div className="logo" />
-          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
+          <Menu theme="dark" mode="horizontal" >
             <Menu.Item key="1"><Link to='/'>Home</Link></Menu.Item>
             <Menu.Item key="2"><Link to='/analytics'>Analytics</Link></Menu.Item>
-            <Menu.Item key="3">Deals</Menu.Item>
+            <Menu.Item key="3"><Link to='/deals'>Deals</Link></Menu.Item>
           </Menu>
         </Header>
         <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
@@ -171,12 +177,12 @@ function App() {
                     <Input placeholder={'Employee Name'} value={creatingEmployee?.name} onChange={e => setCreatingEmployee({ ...creatingEmployee, name: e.target.value })} />
                     <Input placeholder={'Email'} value={creatingEmployee?.email} onChange={e => setCreatingEmployee({ ...creatingEmployee, email: e.target.value })} />
                     <Input placeholder={'Address'} value={creatingEmployee?.address} onChange={e => setCreatingEmployee({ ...creatingEmployee, address: e.target.value })} />
-                    <Input placeholder={'Salary'} value={creatingEmployee?.salary} onChange={e => setCreatingEmployee({ ...creatingEmployee, salary: e.target.value })} />
+                    <Input placeholder={'Salary'} value={creatingEmployee?.salary} onChange={e => setCreatingEmployee({ ...creatingEmployee, salary: parseInt(e.target.value) })} />
                     <Select style={{ display: 'block' }} placeholder='Select currency' value={creatingEmployee?.currency} onChange={value => setCreatingEmployee({ ...creatingEmployee, currency: value })} >
                       <Option value="USD">USD</Option>
                       <Option value="AMD">AMD</Option>
                       <Option value="CAD">CAD</Option>
-                      <Option value="RUR">RUR</Option>
+                      <Option value="EUR">EUR</Option>
                     </Select>
                   </Modal>
                   <Modal
@@ -216,7 +222,10 @@ function App() {
                 </header>
               </Route>
               <Route path='/analytics'>
-                <Analytics />
+                <Analytics revenue={sumOrders} salaryData={dataSource} />
+              </Route>
+              <Route path='/deals'>
+                <Deals parentCallback={handleTotal} />
               </Route>
             </Switch>
           </div>
