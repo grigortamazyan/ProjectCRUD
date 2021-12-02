@@ -108,6 +108,7 @@ function Deals({ dataSource, setDataSource }) {
                 />
                 <Button onClick={onCreateEmployee} style={{ marginBottom: 5 }}>Add an order</Button>
                 <Table
+                    rowKey={(record) => record.id}
                     columns={columns}
                     dataSource={dataSource}
                 ></Table>

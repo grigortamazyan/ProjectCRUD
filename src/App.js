@@ -196,6 +196,7 @@ function App() {
                   />
                   <Button onClick={onCreateEmployee} style={{ marginBottom: 5 }}>Creat a new Employee</Button>
                   <Table
+                    rowKey={(record) => record.id}
                     columns={columns}
                     dataSource={dataSource}
                   ></Table>
